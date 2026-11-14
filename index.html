@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>位置管理</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <h1>位置管理</h1>
+  <input id="name" placeholder="名称">
+  <input id="desc" placeholder="描述">
+  <button onclick="add()">添加</button>
+  <ul id="list"></ul>
+  <script>
+    const supabase = window.supabase.createClient(
+      'YOUR_SUPABASE_URL',
+      'YOUR_SUPABASE_KEY'
+    );
+    async function add() {
+      const { error } = await supabase.from('locations').insert({
+        name: document.getElementById('name').value,
+        description: document.getElementById('desc').value
+      });
+      if (!error) load();
+    }
+    async function load() {
+      const { data } = await supabase.from('locations').select('*');
+      document.getElementById('list').innerHTML = data.map(d => `<li>${d.name} - ${d.description}</li>`).join('');
+    }
+    load();
+  </script>
+</body>
+</html>
